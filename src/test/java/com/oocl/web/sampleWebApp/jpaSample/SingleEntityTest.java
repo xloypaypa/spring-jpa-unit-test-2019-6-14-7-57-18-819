@@ -33,7 +33,7 @@ public class SingleEntityTest {
     public void should_be_able_to_create_entity() throws Exception {
         ResultActions perform = this.mockMvc.perform(put("/singleEntity")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":3,\"name\":\"my name\"}"));
+                .content("{\"name\":\"my name\"}"));
 
         perform.andDo(print()).andExpect(status().isCreated());
     }
@@ -54,7 +54,7 @@ public class SingleEntityTest {
             try {
                 this.mockMvc.perform(put("/singleEntity")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":3,\"name\":\"" + nameLongerThan64 + "\"}"));
+                        .content("{\"name\":\"" + nameLongerThan64 + "\"}"));
             } catch (Exception e) {
                 throw new RuntimeException();
             }
