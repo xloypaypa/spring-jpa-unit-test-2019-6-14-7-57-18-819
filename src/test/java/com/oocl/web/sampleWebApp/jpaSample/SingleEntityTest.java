@@ -9,7 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+
+import static com.oocl.web.sampleWebApp.jpaSample.AssertHelper.assertThrows;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -39,5 +43,21 @@ public class SingleEntityTest {
         ResultActions perform = this.mockMvc.perform(get("/singleEntity"));
 
         perform.andDo(print()).andExpect(status().isOk()).andExpect(content().string(is("[]")));
+    }
+
+    @Test
+    public void should_throw_exception_when_the_name_is_longer_than_64() {
+        char[] chars = new char[100];
+        Arrays.fill(chars, 'a');
+        String nameLongerThan64 = new String(chars);
+        assertThrows(RuntimeException.class, () -> {
+            try {
+                this.mockMvc.perform(put("/singleEntity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":3,\"name\":\"" + nameLongerThan64 + "\"}"));
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        });
     }
 }
